@@ -3,11 +3,11 @@ module;
 #include <memory>
 #include <optional>
 #include <vector>
-export module moderna.test_lib:test_suite;
+export module jowi.test_lib:test_suite;
 import :test_entry;
 import :reflection;
 
-namespace moderna::test_lib {
+namespace jowi::test_lib {
   struct test_suite {
     test_suite(std::string name = "") : __tests{}, __name{std::move(name)} {}
     test_suite &rename(std::string new_name) {

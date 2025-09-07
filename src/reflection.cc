@@ -1,9 +1,9 @@
 module;
 #include <source_location>
 #include <string_view>
-export module moderna.test_lib:reflection;
+export module jowi.test_lib:reflection;
 
-namespace moderna::test_lib {
+namespace jowi::test_lib {
   /*
     This function is copied from
     https://github.com/getml/reflect-cpp

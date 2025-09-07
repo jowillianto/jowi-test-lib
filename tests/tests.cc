@@ -1,24 +1,24 @@
-#include <moderna/test_lib.hpp>
+#include <jowi/test_lib.hpp>
 #include <chrono>
 #include <print>
 #include <stdexcept>
-import moderna.test_lib;
+import jowi.test_lib;
 
-namespace test_lib = moderna::test_lib;
+namespace test_lib = jowi::test_lib;
 
-MODERNA_ADD_TEST(create_with_struct_name) {
+JOWI_ADD_TEST(create_with_struct_name) {
   test_lib::assert_equal(
     test_lib::get_test_context().tests.get(0).value().get().name(), "create_with_struct_name"
   );
 }
 
-MODERNA_ADD_TEST(custom_name) {
+JOWI_ADD_TEST(custom_name) {
   test_lib::assert_equal(
     test_lib::get_test_context().tests.get(1).value().get().name(), "custom_name"
   );
 }
 
-MODERNA_ADD_TEST(run_throw_runtime_error) {
+JOWI_ADD_TEST(run_throw_runtime_error) {
   auto conf = test_lib::test_entry{[]() { throw std::runtime_error("LOL"); }};
   auto res = conf.run_test();
   test_lib::assert_equal(res.is_error(), true);
@@ -26,7 +26,7 @@ MODERNA_ADD_TEST(run_throw_runtime_error) {
   test_lib::assert_equal(res.get_error().value().message, "LOL");
 }
 
-MODERNA_ADD_TEST(test_time_format) {
+JOWI_ADD_TEST(test_time_format) {
   test_lib::test_time_unit prev_unit = test_lib::get_test_context().time_unit;
   test_lib::get_test_context().time_unit = test_lib::test_time_unit::MICRO_SECONDS;
   test_lib::assert_equal(
@@ -52,13 +52,13 @@ MODERNA_ADD_TEST(test_time_format) {
   test_lib::get_test_context().time_unit = prev_unit;
 }
 
-MODERNA_SETUP(argc, argv) {
+JOWI_SETUP(argc, argv) {
   test_lib::get_test_context().thread_count = 1;
 }
 
 /*
   It is here for proof of concept.
 */
-MODERNA_TEARDOWN() {
+JOWI_TEARDOWN() {
   test_lib::get_test_context().thread_count = 0;
 }

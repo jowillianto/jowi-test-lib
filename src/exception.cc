@@ -2,10 +2,10 @@ module;
 #include <exception>
 #include <expected>
 #include <string>
-export module moderna.test_lib:exception;
+export module jowi.test_lib:exception;
 import :reflection;
 
-namespace moderna::test_lib {
+namespace jowi::test_lib {
   template <class exception_t>
   concept is_exception = requires(const exception_t &e) {
     { e.what() } -> std::convertible_to<std::string>;

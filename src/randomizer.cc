@@ -3,9 +3,9 @@ module;
 #include <ranges>
 #include <string>
 
-export module moderna.test_lib:randomizer;
+export module jowi.test_lib:randomizer;
 
-namespace moderna::test_lib {
+namespace jowi::test_lib {
 
   /*
     Hard coded string for randomness
@@ -64,9 +64,7 @@ namespace moderna::test_lib {
   }
 
   export std::string random_string(
-    size_t length,
-    std::string_view choices = ascii_lowercase,
-    const generator &gen = generator{}
+    size_t length, std::string_view choices = ascii_lowercase, const generator &gen = generator{}
   ) {
     std::string generated_str;
     generated_str.reserve(length);
@@ -74,14 +72,13 @@ namespace moderna::test_lib {
       generated_str.push_back(random_pick(choices));
     return generated_str;
   }
-  export template<std::integral T>
-  T random_integer(T a, T b, const generator& gen = generator{}) {
+  export template <std::integral T> T random_integer(T a, T b, const generator &gen = generator{}) {
     std::uniform_int_distribution<T> distribution{a, b};
     return distribution(gen.gen);
   }
-  export template<std::floating_point T>
-  T random_real(T a, T b, const generator& gen = generator{}) {
-    std::uniform_real_distribution<T> distribution { a, b};
+  export template <std::floating_point T>
+  T random_real(T a, T b, const generator &gen = generator{}) {
+    std::uniform_real_distribution<T> distribution{a, b};
     return distribution(gen.gen);
   }
 }

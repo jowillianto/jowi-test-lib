@@ -1,14 +1,14 @@
 module;
+#include <cmath>
 #include <expected>
 #include <format>
 #include <ranges>
 #include <source_location>
 #include <string_view>
-#include <cmath>
-export module moderna.test_lib:assert;
+export module jowi.test_lib:assert;
 import :exception;
 
-namespace moderna::test_lib {
+namespace jowi::test_lib {
   /*
     Checks if two values are equal comparable.
   */
@@ -290,8 +290,13 @@ namespace moderna::test_lib {
   }
 
   template <std::floating_point number_type>
-  void assert_close(number_type l, number_type r, number_type tol = 1e-6, const std::source_location& loc = std::source_location::current()) {
-    number_type rms_diff = std::sqrt(( l - r ) * ( l - r ));
+  void assert_close(
+    number_type l,
+    number_type r,
+    number_type tol = 1e-6,
+    const std::source_location &loc = std::source_location::current()
+  ) {
+    number_type rms_diff = std::sqrt((l - r) * (l - r));
     assert_lt(rms_diff, tol, loc);
   }
 }

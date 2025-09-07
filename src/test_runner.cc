@@ -8,13 +8,13 @@ module;
 #include <ranges>
 #include <thread>
 #include <vector>
-export module moderna.test_lib:test_runner;
+export module jowi.test_lib:test_runner;
 import :test_suite;
 import :test_entry;
 import :test_context;
 import :exception;
 
-namespace moderna::test_lib {
+namespace jowi::test_lib {
   struct multithreaded_runner {
     multithreaded_runner(size_t pool_size) : __pool_size{pool_size} {}
 

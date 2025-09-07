@@ -5,11 +5,11 @@ module;
 #include <memory>
 #include <optional>
 #include <string_view>
-export module moderna.test_lib:test_entry;
+export module jowi.test_lib:test_entry;
 import :exception;
 import :reflection;
 
-namespace moderna::test_lib {
+namespace jowi::test_lib {
   /*
     A structure that contains the test result.
   */
@@ -17,9 +17,7 @@ namespace moderna::test_lib {
   public:
     test_result(
       std::chrono::system_clock::duration dur, std::optional<exception_info> err = std::nullopt
-    ) :
-      __runtime{dur},
-      __err{std::move(err)} {}
+    ) : __runtime{dur}, __err{std::move(err)} {}
 
     std::chrono::system_clock::duration running_time() const {
       return __runtime;
@@ -65,9 +63,7 @@ namespace moderna::test_lib {
       F &&f,
       std::string_view test_name = get_type_name<F>(),
       const exception_pack<exceptions...> &p = exception_pack<>{}
-    ) :
-      __f{f},
-      __name{test_name} {}
+    ) : __f{f}, __name{test_name} {}
     test_result run_test() const override {
       auto beg = std::chrono::system_clock::now();
       auto res =
@@ -75,9 +71,8 @@ namespace moderna::test_lib {
           .safely_run_invocable(__f);
       auto end = std::chrono::system_clock::now();
       auto dur = end - beg;
-      return res.transform_error([&](auto &&e) {
-                  return test_result{dur, std::move(e)};
-                }
+      return res.transform_error(
+                  [&](auto &&e) { return test_result{dur, std::move(e)}; }
       ).error_or(test_result{dur});
     }
 

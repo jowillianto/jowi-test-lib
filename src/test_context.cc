@@ -2,10 +2,10 @@ module;
 #include <array>
 #include <chrono>
 #include <functional>
-export module moderna.test_lib:test_context;
+export module jowi.test_lib:test_context;
 import :test_suite;
 
-namespace moderna::test_lib {
+namespace jowi::test_lib {
 
   export enum struct test_time_unit { MICRO_SECONDS, MILLI_SECONDS, SECONDS };
 
