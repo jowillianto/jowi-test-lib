@@ -263,12 +263,12 @@ namespace jowi::test_lib {
   T assert_expected_value(
     std::expected<T, E> &&res, const std::source_location &loc = std::source_location::current()
   ) {
-    if (res.has_value()) {
-      return std::move(res.value());
-    } else {
+    if (!res.has_value()) {
       // This is going to throw
       assert_expected(res, loc);
       throw;
+    } else if constexpr (!std::same_as<T, void>) {
+      return std::move(res.value());
     }
   }
 
