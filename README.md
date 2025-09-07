@@ -24,7 +24,7 @@ This macro creates a function that will add a function declared after it into th
 import jowi.test_lib;
 #include <jowi/test_lib.hpp>
 
-JOWI_ADD_TEST() {}
+JOWI_ADD_TEST(your_test_name) {}
 ```
 - `JOWI_SETUP(argc, argv)`
 This macro setups a function that will setup the test settings for a specific use case. Treat this as if it is a constructor that will construct the tests. 
