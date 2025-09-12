@@ -9,6 +9,7 @@ include (CTest)
 
 if (NOT TARGET ${PROJECT_NAME})
   add_library(${PROJECT_NAME})
+  add_library(jowi::test_lib ALIAS ${PROJECT_NAME})
   target_sources(${PROJECT_NAME}
     PUBLIC
       FILE_SET CXX_MODULES 
