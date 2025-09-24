@@ -1,0 +1,3 @@
+[submodule "libs/jowi-cli"]
+	path = libs/jowi-cli
+	url = github.com:jowillianto/jowi-cli

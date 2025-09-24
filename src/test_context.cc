@@ -9,7 +9,7 @@ namespace jowi::test_lib {
 
   export enum struct test_time_unit { MICRO_SECONDS, MILLI_SECONDS, SECONDS };
 
-  struct test_context {
+  export struct test_context {
     test_context() : __setup{[](int argc, const char **argv) {}}, __teardown{[]() {}} {}
     int thread_count = 1;
     test_suite tests = test_suite{};
