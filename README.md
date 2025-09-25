@@ -1,4 +1,11 @@
 # Test Lib
+![GitHub stars](https://img.shields.io/github/stars/jowillianto/jowi-test-lib?style=social)
+![GitHub forks](https://img.shields.io/github/forks/jowillianto/jowi-test-lib?style=social)
+![GitHub watchers](https://img.shields.io/github/watchers/jowillianto/jowi-test-lib?style=social)
+![GitHub repo size](https://img.shields.io/github/repo-size/jowillianto/jowi-test-lib)
+![GitHub language count](https://img.shields.io/github/languages/count/jowillianto/jowi-test-lib)
+![GitHub top language](https://img.shields.io/github/languages/top/jowillianto/jowi-test-lib)
+![GitHub last commit](https://img.shields.io/github/last-commit/jowillianto/jowi-test-lib?color=red)
 A Simple and Light C++23 modules based C++ testing library. 
 
 ## Example Usage
