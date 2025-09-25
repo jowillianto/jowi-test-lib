@@ -11,7 +11,7 @@ namespace test_lib = jowi::test_lib;
 JOWI_ADD_TEST(test_random_pick) {
   std::vector<int> choices = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
   auto v = test_lib::random_pick(choices);
-  test_lib::assert_true(v >= 1 && v >= 10);
+  test_lib::assert_true(v >= 1 && v <= 10);
 }
 
 JOWI_ADD_TEST(test_random_string) {
