@@ -49,7 +49,13 @@ struct valid_test_name_validator {
   }
 };
 
-void print_test_output(cli::app &app, std::string_view name, size_t i, test_lib::test_result &res) {
+void print_test_output(
+  cli::app &app,
+  std::string_view name,
+  size_t i,
+  test_lib::test_result &res,
+  test_lib::test_context &ctx
+) {
   if (res.is_ok()) {
     app.out(
       "{} {} {} ({})",
@@ -64,7 +70,7 @@ void print_test_output(cli::app &app, std::string_view name, size_t i, test_lib:
         ui::cli_node::format_end()
       },
       name,
-      res.running_time()
+      ctx.get_time(res.running_time())
     );
   } else {
     app.out(
@@ -80,7 +86,7 @@ void print_test_output(cli::app &app, std::string_view name, size_t i, test_lib:
         ui::cli_node::format_end()
       },
       name,
-      res.running_time(),
+      ctx.get_time(res.running_time()),
       ui::cli_nodes{
         ui::cli_node::format_begin(ui::text_format{}.fg(ui::color::bright_yellow())),
         ui::cli_node::text("{:=<80}", ""),
@@ -182,7 +188,7 @@ int main(int argc, const char **argv) {
       } else {
         err_count += 1;
       }
-      print_test_output(app, test.get()->name(), i, res);
+      print_test_output(app, test.get()->name(), i, res, ctx);
     } else {
       app.out(
         "{} {} {}",
