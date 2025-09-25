@@ -21,7 +21,6 @@ if (NOT TARGET ${PROJECT_NAME})
           ${CMAKE_CURRENT_LIST_DIR}/src/test_context.cc
           ${CMAKE_CURRENT_LIST_DIR}/src/test_entry.cc
           ${CMAKE_CURRENT_LIST_DIR}/src/test_lib.cc
-          ${CMAKE_CURRENT_LIST_DIR}/src/test_runner.cc
           ${CMAKE_CURRENT_LIST_DIR}/src/test_suite.cc
       FILE_SET HEADERS 
         BASE_DIRS 
