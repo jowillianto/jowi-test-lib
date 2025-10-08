@@ -162,6 +162,14 @@ int main(int argc, const char **argv) {
     return 0;
   }
 
+  app.out(
+    "{}",
+    ui::cli_nodes{
+      ui::cli_node::format_begin(ui::text_format{}.fg(ui::color::bright_cyan())),
+      ui::cli_node::text("{:=<80}", ""),
+      ui::cli_node::format_end()
+    }
+  );
   /*
     Run tests based on --filter and --exclude. When both are given --filter will be applied.
   */
@@ -200,5 +208,44 @@ int main(int argc, const char **argv) {
     i += 1;
   }
   ctx.tear_down();
+  /*
+    Print Statistics
+  */
+  app.out(
+    "{}",
+    ui::cli_nodes{
+      ui::cli_node::format_begin(ui::text_format{}.fg(ui::color::bright_cyan())),
+      ui::cli_node::text("{:=<80}", ""),
+      ui::cli_node::format_end()
+    }
+  );
+  app.out("Ran {:3} tests", succ_count + err_count);
+  app.out(
+    "{} {:3} tests",
+    ui::cli_nodes{
+      ui::cli_node::format_begin(ui::text_format{}.fg(ui::color::bright_green())),
+      ui::cli_node::text("[{:4}]", "OK!"),
+      ui::cli_node::format_end()
+    },
+    succ_count
+  );
+  app.out(
+    "{} {:3} tests",
+    ui::cli_nodes{
+      ui::cli_node::format_begin(ui::text_format{}.fg(ui::color::bright_red())),
+      ui::cli_node::text("[{:4}]", "ERR!"),
+      ui::cli_node::format_end()
+    },
+    err_count
+  );
+  app.out(
+    "{} {:3} tests",
+    ui::cli_nodes{
+      ui::cli_node::format_begin(ui::text_format{}.fg(ui::color::bright_yellow())),
+      ui::cli_node::text("[{:4}]", "EXC!"),
+      ui::cli_node::format_end()
+    },
+    i - succ_count - err_count
+  );
   return err_count;
 }
