@@ -67,7 +67,7 @@ namespace jowi::test_lib {
       if constexpr (std::formattable<T, char> && std::formattable<V, char>) {
         throw fail_assertion(
           std::format(
-            "At {} Line {} , {} is not equal to {}",
+            "At {} Line {} , {} is equal to {}",
             std::string_view{location.file_name()},
             location.line(),
             x,
