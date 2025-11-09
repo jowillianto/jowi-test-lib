@@ -19,7 +19,7 @@ JOWI_ADD_TEST(custom_name) {
 }
 
 JOWI_ADD_TEST(run_throw_runtime_error) {
-  auto conf = test_lib::test_entry{[]() { throw std::runtime_error("LOL"); }};
+  auto conf = test_lib::TestEntry{[]() { throw std::runtime_error("LOL"); }};
   auto res = conf.run_test();
   test_lib::assert_equal(res.is_error(), true);
   test_lib::assert_equal(res.get_error().value().name, "std::runtime_error");
@@ -27,22 +27,22 @@ JOWI_ADD_TEST(run_throw_runtime_error) {
 }
 
 JOWI_ADD_TEST(test_time_format) {
-  test_lib::test_time_unit prev_unit = test_lib::get_test_context().time_unit;
-  test_lib::get_test_context().time_unit = test_lib::test_time_unit::MICRO_SECONDS;
+  test_lib::TestTimeUnit prev_unit = test_lib::get_test_context().time_unit;
+  test_lib::get_test_context().time_unit = test_lib::TestTimeUnit::MICRO_SECONDS;
   test_lib::assert_equal(
     test_lib::get_test_context().get_time(
       std::chrono::duration_cast<std::chrono::system_clock::duration>(std::chrono::microseconds{1})
     ),
     "1.00 μs"
   );
-  test_lib::get_test_context().time_unit = test_lib::test_time_unit::MILLI_SECONDS;
+  test_lib::get_test_context().time_unit = test_lib::TestTimeUnit::MILLI_SECONDS;
   test_lib::assert_equal(
     test_lib::get_test_context().get_time(
       std::chrono::duration_cast<std::chrono::system_clock::duration>(std::chrono::milliseconds{1})
     ),
     "1.00 ms"
   );
-  test_lib::get_test_context().time_unit = test_lib::test_time_unit::SECONDS;
+  test_lib::get_test_context().time_unit = test_lib::TestTimeUnit::SECONDS;
   test_lib::assert_equal(
     test_lib::get_test_context().get_time(
       std::chrono::duration_cast<std::chrono::system_clock::duration>(std::chrono::seconds{1})

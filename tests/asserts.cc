@@ -88,5 +88,5 @@ JOWI_ADD_TEST(test_assert_expected) {
 
 JOWI_ADD_TEST(test_assert_throw) {
   test_lib::assert_throw([]() { throw std::runtime_error{""}; });
-  test_lib::assert_throw<test_lib::fail_assertion>([]() { throw test_lib::fail_assertion(""); });
+  test_lib::assert_throw<test_lib::FailAssertion>([]() { throw test_lib::FailAssertion(""); });
 }

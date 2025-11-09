@@ -67,14 +67,14 @@ function(jowi_add_test target_name)
           ${ARG_LIBRARIES} 
           jowi::test_lib
           jowi::cli
-          jowi::cli::ui
+          jowi::tui
       )
     else()
       target_link_libraries(${target_name} 
         PRIVATE 
           jowi::test_lib
           jowi::cli
-          jowi::cli::ui
+          jowi::tui
       )
     endif()
     if(ARG_COMPILE_DEFINITIONS)

@@ -5,25 +5,25 @@
 #include <string>
 import jowi.test_lib;
 import jowi.cli;
-import jowi.cli.ui;
+import jowi.tui;
 
 namespace test_lib = jowi::test_lib;
 namespace cli = jowi::cli;
-namespace ui = jowi::cli::ui;
+namespace tui = jowi::tui;
 
-auto app_id = cli::app_identity{
+auto app_id = cli::AppIdentity{
   .name = "Jowi Test Utility",
   .description = "Command Line Test Program for a set of predefined tests",
-  .version = cli::app_version{1, 0, 0}
+  .version = cli::AppVersion{1, 0, 0}
 };
 
-struct filter_exclude_validator {
-  std::expected<void, cli::parse_error> post_validate(
-    std::optional<std::reference_wrapper<const cli::arg_key>> k, cli::parsed_arg &args
+struct FilterExcludeValidator {
+  std::expected<void, cli::ParseError> post_validate(
+    std::optional<std::reference_wrapper<const cli::ArgKey>> k, cli::ParsedArg &args
   ) const {
     if (args.contains("--filter") && args.contains("--exclude")) {
-      return std::unexpected{cli::parse_error{
-        cli::parse_error_type::TOO_MANY_VALUE_GIVEN,
+      return std::unexpected{cli::ParseError{
+        cli::ParseErrorType::TOO_MANY_VALUE_GIVEN,
         "only one of '--filter' or '--exclude' can be given"
       }};
     }
@@ -31,16 +31,16 @@ struct filter_exclude_validator {
   }
 };
 
-struct valid_test_name_validator {
-  std::reference_wrapper<const test_lib::test_suite> tests;
+struct ValidTestNameValidator {
+  std::reference_wrapper<const test_lib::TestSuite> tests;
 
-  std::expected<void, cli::parse_error> validate(std::optional<std::string_view> v) const {
+  std::expected<void, cli::ParseError> validate(std::optional<std::string_view> v) const {
     if (!v) {
-      return std::unexpected{cli::parse_error{cli::parse_error_type::NO_VALUE_GIVEN, ""}};
+      return std::unexpected{cli::ParseError{cli::ParseErrorType::NO_VALUE_GIVEN, ""}};
     }
     if (!tests.get().get(v.value())) {
-      return std::unexpected{cli::parse_error{
-        cli::parse_error_type::INVALID_VALUE,
+      return std::unexpected{cli::ParseError{
+        cli::ParseErrorType::INVALID_VALUE,
         "'{}' is not a valid test name. Use --list for the full list of tests",
         v.value()
       }};
@@ -50,24 +50,24 @@ struct valid_test_name_validator {
 };
 
 void print_test_output(
-  cli::app &app,
+  cli::App &app,
   std::string_view name,
   size_t i,
-  test_lib::test_result &res,
-  test_lib::test_context &ctx
+  test_lib::TestResult &res,
+  test_lib::TestContext &ctx
 ) {
   if (res.is_ok()) {
     app.out(
       "{} {} {} ({})",
-      ui::cli_nodes{
-        ui::cli_node::format_begin(ui::text_format{}.fg(ui::color::bright_blue())),
-        ui::cli_node::text("[{:3}]", i),
-        ui::cli_node::format_end()
+      tui::CliNodes{
+        tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_blue())),
+        tui::CliNode::text("[{:3}]", i),
+        tui::CliNode::format_end()
       },
-      ui::cli_nodes{
-        ui::cli_node::format_begin(ui::text_format{}.fg(ui::color::bright_green())),
-        ui::cli_node::text("[{:4}]", "OK!"),
-        ui::cli_node::format_end()
+      tui::CliNodes{
+        tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_green())),
+        tui::CliNode::text("[{:4}]", "OK!"),
+        tui::CliNode::format_end()
       },
       name,
       ctx.get_time(res.running_time())
@@ -75,39 +75,39 @@ void print_test_output(
   } else {
     app.out(
       "{} {} {} ({})\n{}",
-      ui::cli_nodes{
-        ui::cli_node::format_begin(ui::text_format{}.fg(ui::color::bright_blue())),
-        ui::cli_node::text("[{:3}]", i),
-        ui::cli_node::format_end()
+      tui::CliNodes{
+        tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_blue())),
+        tui::CliNode::text("[{:3}]", i),
+        tui::CliNode::format_end()
       },
-      ui::cli_nodes{
-        ui::cli_node::format_begin(ui::text_format{}.fg(ui::color::bright_red())),
-        ui::cli_node::text("[{:4}]", "ERR!"),
-        ui::cli_node::format_end()
+      tui::CliNodes{
+        tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_red())),
+        tui::CliNode::text("[{:4}]", "ERR!"),
+        tui::CliNode::format_end()
       },
       name,
       ctx.get_time(res.running_time()),
-      ui::cli_nodes{
-        ui::cli_node::format_begin(ui::text_format{}.fg(ui::color::bright_yellow())),
-        ui::cli_node::text("{:=<80}", ""),
-        ui::cli_node::format_end(),
-        ui::cli_node::new_line(),
-        ui::cli_node::format_begin(ui::text_format{}.fg(ui::color::bright_red())),
-        ui::cli_node::text("{}", res.get_error().value().name),
-        ui::cli_node::format_end(),
-        ui::cli_node::new_line(),
-        ui::cli_node::new_line(),
-        ui::cli_node::text("{}", res.get_error().value().message),
-        ui::cli_node::new_line(),
-        ui::cli_node::format_begin(ui::text_format{}.fg(ui::color::bright_yellow())),
-        ui::cli_node::text("{:=<80}", ""),
-        ui::cli_node::format_end()
+      tui::CliNodes{
+        tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_yellow())),
+        tui::CliNode::text("{:=<80}", ""),
+        tui::CliNode::format_end(),
+        tui::CliNode::new_line(),
+        tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_red())),
+        tui::CliNode::text("{}", res.get_error().value().name),
+        tui::CliNode::format_end(),
+        tui::CliNode::new_line(),
+        tui::CliNode::new_line(),
+        tui::CliNode::text("{}", res.get_error().value().message),
+        tui::CliNode::new_line(),
+        tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_yellow())),
+        tui::CliNode::text("{:=<80}", ""),
+        tui::CliNode::format_end()
       }
     );
   }
 }
 
-bool should_run_test(std::string_view name, cli::app &app) {
+bool should_run_test(std::string_view name, cli::App &app) {
   if (app.args().contains("--filter")) {
     auto ic = app.args().filter("--filter");
     return std::ranges::find(ic, name) != ic.end();
@@ -119,7 +119,7 @@ bool should_run_test(std::string_view name, cli::app &app) {
 
 int main(int argc, const char **argv) {
   auto &ctx = test_lib::get_test_context();
-  auto app = cli::app{app_id, argc, argv};
+  auto app = cli::App{app_id, argc, argv};
   /*
     Arguments
   */
@@ -127,14 +127,14 @@ int main(int argc, const char **argv) {
     .help("A list of tests to run. This argument can be given multiple times")
     .require_value()
     .n_at_least(0)
-    .add_validator(filter_exclude_validator{})
-    .add_validator(valid_test_name_validator{ctx.tests});
+    .add_validator(FilterExcludeValidator{})
+    .add_validator(ValidTestNameValidator{ctx.tests});
   app.add_argument("--exclude")
     .help("A list of tests to exclude. This argument can be given multiple times")
     .require_value()
     .n_at_least(0)
-    .add_validator(filter_exclude_validator{})
-    .add_validator(valid_test_name_validator{ctx.tests});
+    .add_validator(FilterExcludeValidator{})
+    .add_validator(ValidTestNameValidator{ctx.tests});
   app.add_argument("--list")
     .help("Lists all the available tests, this will ignore all previous arguments")
     .as_flag()
@@ -150,10 +150,10 @@ int main(int argc, const char **argv) {
     for (const auto &t : ctx.tests) {
       app.out(
         "{} {}",
-        ui::cli_nodes{
-          ui::cli_node::format_begin(ui::text_format{}.fg(ui::color::bright_blue())),
-          ui::cli_node::text("[{:3}]", i),
-          ui::cli_node::format_end()
+        tui::CliNodes{
+          tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_blue())),
+          tui::CliNode::text("[{:3}]", i),
+          tui::CliNode::format_end()
         },
         t->name()
       );
@@ -164,10 +164,10 @@ int main(int argc, const char **argv) {
 
   app.out(
     "{}",
-    ui::cli_nodes{
-      ui::cli_node::format_begin(ui::text_format{}.fg(ui::color::bright_cyan())),
-      ui::cli_node::text("{:=<80}", ""),
-      ui::cli_node::format_end()
+    tui::CliNodes{
+      tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_cyan())),
+      tui::CliNode::text("{:=<80}", ""),
+      tui::CliNode::format_end()
     }
   );
   /*
@@ -192,15 +192,15 @@ int main(int argc, const char **argv) {
     } else {
       app.out(
         "{} {} {}",
-        ui::cli_nodes{
-          ui::cli_node::format_begin(ui::text_format{}.fg(ui::color::bright_blue())),
-          ui::cli_node::text("[{:3}]", i),
-          ui::cli_node::format_end()
+        tui::CliNodes{
+          tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_blue())),
+          tui::CliNode::text("[{:3}]", i),
+          tui::CliNode::format_end()
         },
-        ui::cli_nodes{
-          ui::cli_node::format_begin(ui::text_format{}.fg(ui::color::bright_yellow())),
-          ui::cli_node::text("[{:4}]", "EXC!"),
-          ui::cli_node::format_end()
+        tui::CliNodes{
+          tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_yellow())),
+          tui::CliNode::text("[{:4}]", "EXC!"),
+          tui::CliNode::format_end()
         },
         test->name()
       );
@@ -213,37 +213,37 @@ int main(int argc, const char **argv) {
   */
   app.out(
     "{}",
-    ui::cli_nodes{
-      ui::cli_node::format_begin(ui::text_format{}.fg(ui::color::bright_cyan())),
-      ui::cli_node::text("{:=<80}", ""),
-      ui::cli_node::format_end()
+    tui::CliNodes{
+      tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_cyan())),
+      tui::CliNode::text("{:=<80}", ""),
+      tui::CliNode::format_end()
     }
   );
   app.out("Ran {:3} tests", succ_count + err_count);
   app.out(
     "{} {:3} tests",
-    ui::cli_nodes{
-      ui::cli_node::format_begin(ui::text_format{}.fg(ui::color::bright_green())),
-      ui::cli_node::text("[{:4}]", "OK!"),
-      ui::cli_node::format_end()
+    tui::CliNodes{
+      tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_green())),
+      tui::CliNode::text("[{:4}]", "OK!"),
+      tui::CliNode::format_end()
     },
     succ_count
   );
   app.out(
     "{} {:3} tests",
-    ui::cli_nodes{
-      ui::cli_node::format_begin(ui::text_format{}.fg(ui::color::bright_red())),
-      ui::cli_node::text("[{:4}]", "ERR!"),
-      ui::cli_node::format_end()
+    tui::CliNodes{
+      tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_red())),
+      tui::CliNode::text("[{:4}]", "ERR!"),
+      tui::CliNode::format_end()
     },
     err_count
   );
   app.out(
     "{} {:3} tests",
-    ui::cli_nodes{
-      ui::cli_node::format_begin(ui::text_format{}.fg(ui::color::bright_yellow())),
-      ui::cli_node::text("[{:4}]", "EXC!"),
-      ui::cli_node::format_end()
+    tui::CliNodes{
+      tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_yellow())),
+      tui::CliNode::text("[{:4}]", "EXC!"),
+      tui::CliNode::format_end()
     },
     i - succ_count - err_count
   );

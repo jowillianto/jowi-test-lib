@@ -34,16 +34,16 @@ namespace jowi::test_lib {
     std::string_view{ascii_letters.begin() + 52, ascii_letters.begin() + 62};
 
   /*
-    This creates an internal random number generator.
+    This creates an internal random number Generator.
   */
-  export struct generator {
+  export struct Generator {
     mutable std::random_device rd;
     mutable std::mt19937 gen;
 
-    generator() : rd{}, gen{rd()} {}
+    Generator() : rd{}, gen{rd()} {}
   };
   /*
-    Random Algorithms using the generator defined above.
+    Random Algorithms using the Generator defined above.
   */
 
   /*
@@ -53,7 +53,7 @@ namespace jowi::test_lib {
   export template <std::ranges::forward_range T>
     requires(std::convertible_to<std::ranges::range_size_t<T>, size_t>)
   const std::ranges::range_value_t<T> &random_pick(
-    const T &container, const generator &gen = generator{}
+    const T &container, const Generator &gen = Generator{}
   ) {
     const auto begin = std::ranges::begin(container);
     const auto end = std::ranges::end(container);
@@ -64,7 +64,7 @@ namespace jowi::test_lib {
   }
 
   export std::string random_string(
-    size_t length, std::string_view choices = ascii_lowercase, const generator &gen = generator{}
+    size_t length, std::string_view choices = ascii_lowercase, const Generator &gen = Generator{}
   ) {
     std::string generated_str;
     generated_str.reserve(length);
@@ -72,12 +72,12 @@ namespace jowi::test_lib {
       generated_str.push_back(random_pick(choices));
     return generated_str;
   }
-  export template <std::integral T> T random_integer(T a, T b, const generator &gen = generator{}) {
+  export template <std::integral T> T random_integer(T a, T b, const Generator &gen = Generator{}) {
     std::uniform_int_distribution<T> distribution{a, b};
     return distribution(gen.gen);
   }
   export template <std::floating_point T>
-  T random_real(T a, T b, const generator &gen = generator{}) {
+  T random_real(T a, T b, const Generator &gen = Generator{}) {
     std::uniform_real_distribution<T> distribution{a, b};
     return distribution(gen.gen);
   }

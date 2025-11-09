@@ -25,7 +25,7 @@ namespace jowi::test_lib {
   };
 
   /*
-    Checks the equality of two values x and y. Throw a fail_assertion exception when the assertion
+    Checks the equality of two values x and y. Throw a FailAssertion exception when the assertion
     fails. When used in the scope of a tester, exception will be caught and will invalidate the
     test.
   */
@@ -35,7 +35,7 @@ namespace jowi::test_lib {
   ) {
     if (x != y) {
       if constexpr (std::formattable<T, char> && std::formattable<V, char>) {
-        throw fail_assertion(
+        throw FailAssertion(
           std::format(
             "At {} Line {} , {} is not equal to {}",
             std::string_view{std::string_view{location.file_name()}},
@@ -45,7 +45,7 @@ namespace jowi::test_lib {
           )
         );
       } else {
-        throw fail_assertion(
+        throw FailAssertion(
           std::format(
             "Assertion error at line {} file {}",
             location.line(),
@@ -65,7 +65,7 @@ namespace jowi::test_lib {
   ) {
     if (x == y) {
       if constexpr (std::formattable<T, char> && std::formattable<V, char>) {
-        throw fail_assertion(
+        throw FailAssertion(
           std::format(
             "At {} Line {} , {} is equal to {}",
             std::string_view{location.file_name()},
@@ -75,7 +75,7 @@ namespace jowi::test_lib {
           )
         );
       } else {
-        throw fail_assertion(
+        throw FailAssertion(
           std::format(
             "Assertion error at line {} file {}",
             location.line(),
@@ -87,7 +87,7 @@ namespace jowi::test_lib {
   }
 
   /*
-    Checks if x is less than y. Throw a fail_assertion exception when the assertion
+    Checks if x is less than y. Throw a FailAssertion exception when the assertion
     fails. When used in the scope of a tester, exception will be caught and will invalidate the
     test.
   */
@@ -97,7 +97,7 @@ namespace jowi::test_lib {
   ) {
     if (x >= y) {
       if constexpr (std::formattable<T, char> && std::formattable<V, char>) {
-        throw fail_assertion(
+        throw FailAssertion(
           std::format(
             "At {} Line {} , {} is not less than {}",
             std::string_view{location.file_name()},
@@ -107,7 +107,7 @@ namespace jowi::test_lib {
           )
         );
       } else {
-        throw fail_assertion(
+        throw FailAssertion(
           std::format(
             "Assertion error at line {} file {}",
             location.line(),
@@ -144,8 +144,8 @@ namespace jowi::test_lib {
         } else {
           comp(v_x, v_y, location);
         }
-      } catch (const fail_assertion &e) {
-        throw fail_assertion(std::format("{} at index {}", e.msg(), idx));
+      } catch (const FailAssertion &e) {
+        throw FailAssertion(std::format("{} at index {}", e.msg(), idx));
       }
       idx += 1;
     }
@@ -217,7 +217,7 @@ namespace jowi::test_lib {
     const std::source_location &location = std::source_location::current()
   ) {
     if (!expr) {
-      throw fail_assertion(
+      throw FailAssertion(
         std::format(
           "At {} Line {} , {}", std::string_view{location.file_name()}, location.line(), err_msg
         )
@@ -230,7 +230,7 @@ namespace jowi::test_lib {
     const std::source_location &location = std::source_location::current()
   ) {
     if (expr) {
-      throw fail_assertion(
+      throw FailAssertion(
         std::format(
           "At {} Line {} , {}", std::string_view{location.file_name()}, location.line(), err_msg
         )
@@ -240,7 +240,7 @@ namespace jowi::test_lib {
 
   export void assert_close(double x, double y, double tolerance = 1e-6) {
     if (std::abs(x - y) > tolerance) {
-      throw fail_assertion(std::format("{} {} are not close within {}", x, y, tolerance));
+      throw FailAssertion(std::format("{} {} are not close within {}", x, y, tolerance));
     }
   }
 
@@ -277,7 +277,7 @@ namespace jowi::test_lib {
     std::invocable auto &&f, const std::source_location &loc = std::source_location::current()
   ) {
     if constexpr (sizeof...(exceptions)) {
-      auto catcher = exception_catcher<exceptions...>::make();
+      auto catcher = ExceptionCatcher<exceptions...>::make();
       auto res = catcher.safely_run_invocable(std::forward<std::decay_t<decltype(f)>>(f));
       test_lib::assert_true(!res.has_value(), "No exception thrown", loc);
     } else {
