@@ -57,52 +57,54 @@ void print_test_output(
   test_lib::TestContext &ctx
 ) {
   if (res.is_ok()) {
-    app.out(
-      "{} {} {} ({})",
-      tui::CliNodes{
-        tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_blue())),
-        tui::CliNode::text("[{:3}]", i),
-        tui::CliNode::format_end()
-      },
-      tui::CliNodes{
-        tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_green())),
-        tui::CliNode::text("[{:4}]", "OK!"),
-        tui::CliNode::format_end()
-      },
-      name,
-      ctx.get_time(res.running_time())
+    tui::out_terminal.render(
+      tui::Layout{}
+        .append_child(
+          tui::Layout{}
+            .style(tui::DomStyle{}.fg(tui::RgbColor::bright_blue()))
+            .append_child(tui::Paragraph{"[{:3}]", i}.no_newline())
+        )
+        .append_child(
+          tui::Layout{}
+            .style(tui::DomStyle{}.fg(tui::RgbColor::bright_green()))
+            .append_child(tui::Paragraph{"[{:4}]", "OK!"}.no_newline())
+        )
+        .append_child(tui::Paragraph{"{} ({})", name, ctx.get_time(res.running_time())})
     );
   } else {
-    app.out(
-      "{} {} {} ({})\n{}",
-      tui::CliNodes{
-        tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_blue())),
-        tui::CliNode::text("[{:3}]", i),
-        tui::CliNode::format_end()
-      },
-      tui::CliNodes{
-        tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_red())),
-        tui::CliNode::text("[{:4}]", "ERR!"),
-        tui::CliNode::format_end()
-      },
-      name,
-      ctx.get_time(res.running_time()),
-      tui::CliNodes{
-        tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_yellow())),
-        tui::CliNode::text("{:=<80}", ""),
-        tui::CliNode::format_end(),
-        tui::CliNode::new_line(),
-        tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_red())),
-        tui::CliNode::text("{}", res.get_error().value().name),
-        tui::CliNode::format_end(),
-        tui::CliNode::new_line(),
-        tui::CliNode::new_line(),
-        tui::CliNode::text("{}", res.get_error().value().message),
-        tui::CliNode::new_line(),
-        tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_yellow())),
-        tui::CliNode::text("{:=<80}", ""),
-        tui::CliNode::format_end()
-      }
+    tui::out_terminal.render(
+      tui::Layout{}
+        .append_child(
+          tui::Layout{}
+            .style(tui::DomStyle{}.fg(tui::RgbColor::bright_blue()))
+            .append_child(tui::Paragraph{"[{:3}]", i}.no_newline())
+        )
+        .append_child(
+          tui::Layout{}
+            .style(tui::DomStyle{}.fg(tui::RgbColor::bright_red()))
+            .append_child(tui::Paragraph{"[{:4}]", "ERR!"}.no_newline())
+        )
+        .append_child(tui::Paragraph{"{} ({})", name, ctx.get_time(res.running_time())})
+        .append_child(
+          tui::Layout{}
+            .style(tui::DomStyle{}.fg(tui::RgbColor::bright_yellow()))
+            .append_child(tui::Paragraph{"{:=<80}, "})
+        )
+        .append_child(tui::Paragraph{})
+        .append_child(
+          tui::Layout{}
+            .style(tui::DomStyle{}.fg(tui::RgbColor::bright_red()))
+            .append_child(tui::Paragraph{"{}", res.get_error().value().name})
+        )
+        .append_child(tui::Paragraph{})
+        .append_child(tui::Paragraph{})
+        .append_child(tui::Paragraph{"{}", res.get_error().value().message})
+        .append_child(tui::Paragraph{})
+        .append_child(
+          tui::Layout{}
+            .style(tui::DomStyle{}.fg(tui::RgbColor::bright_yellow()))
+            .append_child(tui::Paragraph{"{:=<80}, "})
+        )
     );
   }
 }
@@ -146,29 +148,26 @@ int main(int argc, const char **argv) {
   */
   if (app.args().contains("--list")) {
     uint64_t i = 0;
-    app.out("Found {} tests: ", ctx.tests.size());
+    tui::out_terminal.render(tui::Paragraph{"Found {} tests: ", ctx.tests.size()});
     for (const auto &t : ctx.tests) {
-      app.out(
-        "{} {}",
-        tui::CliNodes{
-          tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_blue())),
-          tui::CliNode::text("[{:3}]", i),
-          tui::CliNode::format_end()
-        },
-        t->name()
+      tui::out_terminal.render(
+        tui::Layout{}
+          .append_child(
+            tui::Layout{}
+              .style(tui::DomStyle{}.fg(tui::RgbColor::bright_blue()))
+              .append_child(tui::Paragraph{"[{:3}]", i}.no_newline())
+          )
+          .append_child(tui::Paragraph{" {}", t->name()})
       );
       i += 1;
     }
     return 0;
   }
 
-  app.out(
-    "{}",
-    tui::CliNodes{
-      tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_cyan())),
-      tui::CliNode::text("{:=<80}", ""),
-      tui::CliNode::format_end()
-    }
+  tui::out_terminal.render(
+    tui::Layout{}
+      .style(tui::DomStyle{}.fg(tui::RgbColor::bright_cyan()))
+      .append_child(tui::Paragraph{"{:=<80}", ""})
   );
   /*
     Run tests based on --filter and --exclude. When both are given --filter will be applied.
@@ -190,19 +189,19 @@ int main(int argc, const char **argv) {
       }
       print_test_output(app, test.get()->name(), i, res, ctx);
     } else {
-      app.out(
-        "{} {} {}",
-        tui::CliNodes{
-          tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_blue())),
-          tui::CliNode::text("[{:3}]", i),
-          tui::CliNode::format_end()
-        },
-        tui::CliNodes{
-          tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_yellow())),
-          tui::CliNode::text("[{:4}]", "EXC!"),
-          tui::CliNode::format_end()
-        },
-        test->name()
+      tui::out_terminal.render(
+        tui::Layout{}
+          .append_child(
+            tui::Layout{}
+              .style(tui::DomStyle{}.fg(tui::RgbColor::bright_blue()))
+              .append_child(tui::Paragraph{"[{:3}]", i}.no_newline())
+          )
+          .append_child(
+            tui::Layout{}
+              .style(tui::DomStyle{}.fg(tui::RgbColor::bright_yellow()))
+              .append_child(tui::Paragraph{"[{:4}]", "OK!"}.no_newline())
+          )
+          .append_child(tui::Paragraph{"{}", test.get() -> name()})
       );
     }
     i += 1;
@@ -211,41 +210,43 @@ int main(int argc, const char **argv) {
   /*
     Print Statistics
   */
-  app.out(
-    "{}",
-    tui::CliNodes{
-      tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_cyan())),
-      tui::CliNode::text("{:=<80}", ""),
-      tui::CliNode::format_end()
-    }
-  );
-  app.out("Ran {:3} tests", succ_count + err_count);
-  app.out(
-    "{} {:3} tests",
-    tui::CliNodes{
-      tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_green())),
-      tui::CliNode::text("[{:4}]", "OK!"),
-      tui::CliNode::format_end()
-    },
-    succ_count
-  );
-  app.out(
-    "{} {:3} tests",
-    tui::CliNodes{
-      tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_red())),
-      tui::CliNode::text("[{:4}]", "ERR!"),
-      tui::CliNode::format_end()
-    },
-    err_count
-  );
-  app.out(
-    "{} {:3} tests",
-    tui::CliNodes{
-      tui::CliNode::format_begin(tui::TextFormat{}.fg(tui::Color::bright_yellow())),
-      tui::CliNode::text("[{:4}]", "EXC!"),
-      tui::CliNode::format_end()
-    },
-    i - succ_count - err_count
+  tui::out_terminal.render(
+    tui::DomNode::vstack(
+      tui::Layout{}
+        .append_child(
+          tui::Layout{}
+            .style(tui::DomStyle{}.fg(tui::RgbColor::bright_cyan()))
+            .append_child(tui::Paragraph{"{:=<80}", ""})
+        )
+        .append_child(tui::Paragraph{"Ran {:3} tests", succ_count + err_count})
+        .append_child(
+          tui::Layout{}
+            .append_child(
+              tui::Layout{}
+                .style(tui::DomStyle{}.fg(tui::RgbColor::bright_green()))
+                .append_child(tui::Paragraph{"[{:4}]", "OK!"}.no_newline())
+            )
+            .append_child(tui::Paragraph{" {:3} tests", succ_count})
+        )
+        .append_child(
+          tui::Layout{}
+            .append_child(
+              tui::Layout{}
+                .style(tui::DomStyle{}.fg(tui::RgbColor::bright_red()))
+                .append_child(tui::Paragraph{"[{:4}]", "ERR!"}.no_newline())
+            )
+            .append_child(tui::Paragraph{" {:3} tests", err_count})
+        )
+        .append_child(
+          tui::Layout{}
+            .append_child(
+              tui::Layout{}
+                .style(tui::DomStyle{}.fg(tui::RgbColor::bright_yellow()))
+                .append_child(tui::Paragraph{"[{:4}]", "EXC!"}.no_newline())
+            )
+            .append_child(tui::Paragraph{" {:3} tests", i - succ_count - err_count})
+        )
+    )
   );
   return err_count;
 }
