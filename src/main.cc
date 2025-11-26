@@ -2,6 +2,7 @@
 #include <expected>
 #include <format>
 #include <optional>
+#include <print>
 #include <string>
 import jowi.test_lib;
 import jowi.cli;
@@ -57,7 +58,8 @@ void print_test_output(
   test_lib::TestContext &ctx
 ) {
   if (res.is_ok()) {
-    tui::out_terminal.render(
+    std::print(
+      "{}",
       tui::Layout{}
         .append_child(
           tui::Layout{}
@@ -72,7 +74,8 @@ void print_test_output(
         .append_child(tui::Paragraph{"{} ({})", name, ctx.get_time(res.running_time())})
     );
   } else {
-    tui::out_terminal.render(
+    std::print(
+      "{}",
       tui::Layout{}
         .append_child(
           tui::Layout{}
@@ -148,9 +151,10 @@ int main(int argc, const char **argv) {
   */
   if (app.args().contains("--list")) {
     uint64_t i = 0;
-    tui::out_terminal.render(tui::Paragraph{"Found {} tests: ", ctx.tests.size()});
+    std::print("{}", tui::Paragraph{"Found {} tests: ", ctx.tests.size()});
     for (const auto &t : ctx.tests) {
-      tui::out_terminal.render(
+      std::print(
+        "{}",
         tui::Layout{}
           .append_child(
             tui::Layout{}
@@ -164,7 +168,8 @@ int main(int argc, const char **argv) {
     return 0;
   }
 
-  tui::out_terminal.render(
+  std::print(
+    "{}",
     tui::Layout{}
       .style(tui::DomStyle{}.fg(tui::RgbColor::bright_cyan()))
       .append_child(tui::Paragraph{"{:=<80}", ""})
@@ -189,7 +194,8 @@ int main(int argc, const char **argv) {
       }
       print_test_output(app, test.get()->name(), i, res, ctx);
     } else {
-      tui::out_terminal.render(
+      std::print(
+        "{}",
         tui::Layout{}
           .append_child(
             tui::Layout{}
@@ -201,7 +207,7 @@ int main(int argc, const char **argv) {
               .style(tui::DomStyle{}.fg(tui::RgbColor::bright_yellow()))
               .append_child(tui::Paragraph{"[{:4}]", "OK!"}.no_newline())
           )
-          .append_child(tui::Paragraph{"{}", test.get() -> name()})
+          .append_child(tui::Paragraph{"{}", test.get()->name()})
       );
     }
     i += 1;
@@ -210,7 +216,8 @@ int main(int argc, const char **argv) {
   /*
     Print Statistics
   */
-  tui::out_terminal.render(
+  std::print(
+    "{}",
     tui::DomNode::vstack(
       tui::Layout{}
         .append_child(
